@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BrainTec - Arena Latihan Daya Ingat</title>
+<meta name="description" content="Portal web game edukasi untuk melatih berbagai dimensi daya ingat manusia: visual, spasial, sekuensial, jangka pendek, dan verbal.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas Confetti untuk selebrasi rekor baru -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- Latar Bintang Jatuh -->
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <!-- Header & Navigasi Utama -->
+  <header class="app-header">
+    <div class="brand" id="brandBtn" role="button" tabindex="0" title="Kembali ke Beranda">
+      <span class="brand-icon">🧠</span>
+      <div class="brand-text">
+        <span class="brand-title">BrainTec</span>
+        <span class="brand-sub">Arena Daya Ingat</span>
+      </div>
+    </div>
+
+    <!-- Tombol Navigasi Menu Game -->
+    <nav class="nav-tabs" id="navTabs" aria-label="Navigasi Game">
+      <button class="nav-btn active" data-view="hub">🏠 Beranda</button>
+      <button class="nav-btn" data-view="cards">🃏 Kartu Kembar</button>
+      <button class="nav-btn" data-view="matrix">⚡ Matriks Spasial</button>
+      <button class="nav-btn" data-view="simon">💡 Urutan Simon</button>
+      <button class="nav-btn" data-view="digit">🔢 Rentang Angka</button>
+      <button class="nav-btn" data-view="verbal">📝 Memori Kata</button>
+    </nav>
+
+    <!-- Tombol Pengaturan Cepat -->
+    <div class="header-actions">
+      <button class="icon-btn" id="soundToggle" title="Matikan/Nyalakan Suara" aria-label="Pengaturan Suara">
+        <span id="soundIcon">🔊</span>
+      </button>
+      <button class="icon-btn" id="themeToggle" title="Ganti Mode Terang/Gelap" aria-label="Ganti Tema">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Kontainer Utama Tampilan -->
+  <main class="main-container">
+
+    <!-- ==================== VIEW 1: BERANDA / HUB ==================== -->
+    <section class="view active" id="view-hub" aria-label="Menu Utama">
+      <div class="hero-card">
+        <div class="hero-content">
+          <span class="hero-badge">🌟 Pusat Asah Otak & Memori</span>
+          <h2>Latih Daya Ingatmu Lewat 5 Tantangan Seru!</h2>
+          <p>
+            Daya ingat manusia memiliki berbagai dimensi: visual, spasial, urutan kejadian, rentang angka, hingga memori bahasa. Pilih tantangan di bawah dan latih ketajaman ingatanmu setiap hari!
+          </p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat-box">
+            <span class="h-num" id="totalGamesPlayed">0</span>
+            <span class="h-lbl">Total Dimainkan</span>
+          </div>
+          <div class="hero-stat-box">
+            <span class="h-num" id="brainRankTitle">Pemula</span>
+            <span class="h-lbl">Peringkat Memori</span>
+          </div>
+          <div class="hero-stat-box">
+            <span class="h-num" id="totalHighscores">0</span>
+            <span class="h-lbl">Total Poin Rekor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Pilihan 5 Game Daya Ingat -->
+      <h3 class="section-title">Pilih Game Daya Ingat</h3>
+      <div class="game-cards-grid">
+
+        <!-- Card 1: Kartu Kembar -->
+        <article class="g-card" data-target="cards">
+          <div class="g-card-top">
+            <span class="g-icon">🃏</span>
+            <span class="g-tag tag-visual">Memori Visual</span>
+          </div>
+          <h4>Kartu Kembar</h4>
+          <p>Hafalkan posisi kartu emoji lalu temukan semua pasangan kembar sebelum waktu habis.</p>
+          <div class="g-card-footer">
+            <span class="g-best">Skor Terbaik: <b id="hubBestCards">0</b></span>
+            <button class="btn play-btn" data-target="cards">Mainkan ➔</button>
+          </div>
+        </article>
+
+        <!-- Card 2: Matriks Spasial -->
+        <article class="g-card" data-target="matrix">
+          <div class="g-card-top">
+            <span class="g-icon">⚡</span>
+            <span class="g-tag tag-spatial">Memori Spasial</span>
+          </div>
+          <h4>Matriks Spasial</h4>
+          <p>Ingat pola kotak-kotak yang berkedip sejenak, lalu klik kembali posisi kotak yang tepat.</p>
+          <div class="g-card-footer">
+            <span class="g-best">Level Terbaik: <b id="hubBestMatrix">0</b></span>
+            <button class="btn play-btn" data-target="matrix">Mainkan ➔</button>
+          </div>
+        </article>
+
+        <!-- Card 3: Urutan Simon -->
+        <article class="g-card" data-target="simon">
+          <div class="g-card-top">
+            <span class="g-icon">💡</span>
+            <span class="g-tag tag-sequential">Memori Sekuensial</span>
+          </div>
+          <h4>Urutan Simon</h4>
+          <p>Perhatikan rangkaian ritme warna dan nada musik, lalu ulangi urutannya secara beruntun.</p>
+          <div class="g-card-footer">
+            <span class="g-best">Panjang Terbaik: <b id="hubBestSimon">0</b></span>
+            <button class="btn play-btn" data-target="simon">Mainkan ➔</button>
+          </div>
+        </article>
+
+        <!-- Card 4: Rentang Angka -->
+        <article class="g-card" data-target="digit">
+          <div class="g-card-top">
+            <span class="g-icon">🔢</span>
+            <span class="g-tag tag-working">Rentang Angka</span>
+          </div>
+          <h4>Rentang Angka</h4>
+          <p>Tes standar psikologi: hafalkan barisan digit angka yang muncul sekilas dan ketikkan kembali.</p>
+          <div class="g-card-footer">
+            <span class="g-best">Digit Terbanyak: <b id="hubBestDigit">0</b></span>
+            <button class="btn play-btn" data-target="digit">Mainkan ➔</button>
+          </div>
+        </article>
+
+        <!-- Card 5: Memori Kata -->
+        <article class="g-card" data-target="verbal">
+          <div class="g-card-top">
+            <span class="g-icon">📝</span>
+            <span class="g-tag tag-verbal">Memori Verbal</span>
+          </div>
+          <h4>Memori Kata</h4>
+          <p>Kenali apakah kata yang muncul adalah kata baru atau sudah pernah ditampilkan sebelumnya.</p>
+          <div class="g-card-footer">
+            <span class="g-best">Skor Tertinggi: <b id="hubBestVerbal">0</b></span>
+            <button class="btn play-btn" data-target="verbal">Mainkan ➔</button>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Info Edukasi Daya Ingat -->
+      <section class="edu-card">
+        <h3>🧠 Mengapa Daya Ingat Perlu Dilatih?</h3>
+        <div class="edu-grid">
+          <div class="edu-item">
+            <b>1. Plastisitas Otak</b>
+            <p>Sistem saraf manusia bersifat dinamis. Melatih memori secara rutin memperkuat sinapsis neuron.</p>
+          </div>
+          <div class="edu-item">
+            <b>2. Fokus & Konsentrasi</b>
+            <p>Membantu menyaring distraksi harian sehingga kemampuan belajar dan bekerja meningkat pesat.</p>
+          </div>
+          <div class="edu-item">
+            <b>3. Ketahanan Kognitif</b>
+            <p>Mencegah penurunan fungsi kognitif dini dan menjaga ingatan tetap tajam di segala usia.</p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ==================== VIEW 2: KARTU KEMBAR ==================== -->
+    <section class="view" id="view-cards" aria-label="Game Kartu Kembar">
+      <div class="game-header">
+        <button class="back-btn" data-view="hub">← Menu</button>
+        <div class="game-title-wrap">
+          <h2>🃏 Kartu Kembar</h2>
+          <span class="badge-mini">Memori Visual & Asosiatif</span>
+        </div>
+        <button class="btn-help" data-game="cards" title="Cara Bermain">ℹ️ Bantuan</button>
+      </div>
+
+      <!-- Pilihan Level -->
+      <div class="levels" id="levels" role="group" aria-label="Pilih level"></div>
+
+      <!-- Panel Status -->
+      <div class="stats stats-4">
+        <div class="st" id="stTime"><small>Waktu</small><b id="time">2:00</b></div>
+        <div class="st"><small>Langkah</small><b id="moves">0</b></div>
+        <div class="st"><small>Pasangan</small><b id="pairs">0/0</b></div>
+        <div class="st"><small>Skor Terbaik</small><b id="best">–</b></div>
+      </div>
+
+      <!-- Bar Durasi Waktu -->
+      <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+
+      <!-- Papan Kartu -->
+      <div class="board" id="board"></div>
+      <p class="hint" id="hint">Hafalkan posisi kartunya dulu...</p>
+    </section>
+
+    <!-- ==================== VIEW 3: MATRIKS SPASIAL ==================== -->
+    <section class="view" id="view-matrix" aria-label="Game Matriks Spasial">
+      <div class="game-header">
+        <button class="back-btn" data-view="hub">← Menu</button>
+        <div class="game-title-wrap">
+          <h2>⚡ Matriks Spasial</h2>
+          <span class="badge-mini">Memori Lokasi & Spasial</span>
+        </div>
+        <button class="btn-help" data-game="matrix" title="Cara Bermain">ℹ️ Bantuan</button>
+      </div>
+
+      <div class="stats stats-4">
+        <div class="st"><small>Level</small><b id="matLevel">1</b></div>
+        <div class="st"><small>Sisa Kotak</small><b id="matTargetLeft">0</b></div>
+        <div class="st"><small>Kesempatan</small><b id="matLives">❤️❤️❤️</b></div>
+        <div class="st"><small>Level Rekor</small><b id="matBest">0</b></div>
+      </div>
+
+      <div class="bar" aria-hidden="true"><i id="matFill"></i></div>
+
+      <!-- Papan Matriks Grid -->
+      <div class="matrix-board-wrap">
+        <div class="matrix-board" id="matrixBoard"></div>
+      </div>
+
+      <p class="hint" id="matHint">Ingat posisi kotak yang menyala!</p>
+
+      <div class="game-controls">
+        <button class="btn" id="matStartBtn">Mulai Ronde</button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: URUTAN SIMON ==================== -->
+    <section class="view" id="view-simon" aria-label="Game Urutan Simon">
+      <div class="game-header">
+        <button class="back-btn" data-view="hub">← Menu</button>
+        <div class="game-title-wrap">
+          <h2>💡 Urutan Simon</h2>
+          <span class="badge-mini">Memori Sekuensial & Nada</span>
+        </div>
+        <button class="btn-help" data-game="simon" title="Cara Bermain">ℹ️ Bantuan</button>
+      </div>
+
+      <div class="stats stats-3">
+        <div class="st"><small>Panjang Urutan</small><b id="simonScore">0</b></div>
+        <div class="st"><small>Status</small><b id="simonStatus">Siap</b></div>
+        <div class="st"><small>Rekor Urutan</small><b id="simonBest">0</b></div>
+      </div>
+
+      <!-- Lingkaran Tombol 4 Warna Simon -->
+      <div class="simon-container">
+        <div class="simon-circle">
+          <button class="simon-pad pad-pink" id="pad-0" data-idx="0" aria-label="Pad Pink (C4)"></button>
+          <button class="simon-pad pad-blue" id="pad-1" data-idx="1" aria-label="Pad Biru (E4)"></button>
+          <button class="simon-pad pad-green" id="pad-2" data-idx="2" aria-label="Pad Hijau (G4)"></button>
+          <button class="simon-pad pad-gold" id="pad-3" data-idx="3" aria-label="Pad Emas (C5)"></button>
+          <div class="simon-center">
+            <span class="simon-center-icon">🎵</span>
+            <span class="simon-center-score" id="simonCenterScore">0</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint" id="simonHint">Tekan 'Mulai' untuk melihat urutan warna dan nada!</p>
+
+      <div class="game-controls">
+        <button class="btn" id="simonStartBtn">Mulai Permainan</button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: RENTANG ANGKA ==================== -->
+    <section class="view" id="view-digit" aria-label="Game Rentang Angka">
+      <div class="game-header">
+        <button class="back-btn" data-view="hub">← Menu</button>
+        <div class="game-title-wrap">
+          <h2>🔢 Rentang Angka</h2>
+          <span class="badge-mini">Memori Jangka Pendek (Digit Span)</span>
+        </div>
+        <button class="btn-help" data-game="digit" title="Cara Bermain">ℹ️ Bantuan</button>
+      </div>
+
+      <!-- Opsi Mode: Maju vs Mundur -->
+      <div class="mode-selector" role="group" aria-label="Pilih Mode Ingatan">
+        <button class="mode-btn active" id="modeForward">Mode Maju (Standar)</button>
+        <button class="mode-btn" id="modeReverse">Mode Mundur (Kognitif Lanjut)</button>
+      </div>
+
+      <div class="stats stats-3">
+        <div class="st"><small>Panjang Digit</small><b id="digitLength">3</b></div>
+        <div class="st"><small>Kesempatan</small><b id="digitLives">❤️❤️❤️</b></div>
+        <div class="st"><small>Rekor Digit</small><b id="digitBest">0</b></div>
+      </div>
+
+      <!-- Layar Flash Angka / Input -->
+      <div class="digit-stage" id="digitStage">
+        <!-- Fase Menampilkan Angka -->
+        <div class="digit-display" id="digitDisplay">
+          <div class="digit-big" id="digitBigText">?</div>
+          <div class="digit-progress" id="digitDots"></div>
+        </div>
+
+        <!-- Fase Input Angka -->
+        <div class="digit-input-panel" id="digitInputPanel" style="display:none;">
+          <div class="digit-user-input" id="digitUserInput" aria-live="polite">_ _ _</div>
+          <!-- On-screen Keypad -->
+          <div class="numpad">
+            <button class="num-key" data-k="1">1</button>
+            <button class="num-key" data-k="2">2</button>
+            <button class="num-key" data-k="3">3</button>
+            <button class="num-key" data-k="4">4</button>
+            <button class="num-key" data-k="5">5</button>
+            <button class="num-key" data-k="6">6</button>
+            <button class="num-key" data-k="7">7</button>
+            <button class="num-key" data-k="8">8</button>
+            <button class="num-key" data-k="9">9</button>
+            <button class="num-key alt" data-k="C" title="Bersihkan">C</button>
+            <button class="num-key" data-k="0">0</button>
+            <button class="num-key alt" data-k="BS" title="Hapus Satu">⌫</button>
+          </div>
+          <button class="btn submit-btn" id="digitSubmitBtn">Kirim Jawaban ✔</button>
+        </div>
+      </div>
+
+      <p class="hint" id="digitHint">Tekan 'Mulai Tes' untuk mengingat deretan angka.</p>
+
+      <div class="game-controls">
+        <button class="btn" id="digitStartBtn">Mulai Tes Angka</button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 6: MEMORI KATA ==================== -->
+    <section class="view" id="view-verbal" aria-label="Game Memori Kata">
+      <div class="game-header">
+        <button class="back-btn" data-view="hub">← Menu</button>
+        <div class="game-title-wrap">
+          <h2>📝 Memori Kata</h2>
+          <span class="badge-mini">Memori Pengenalan Verbal</span>
+        </div>
+        <button class="btn-help" data-game="verbal" title="Cara Bermain">ℹ️ Bantuan</button>
+      </div>
+
+      <div class="stats stats-3">
+        <div class="st"><small>Skor Benar</small><b id="verbalScore">0</b></div>
+        <div class="st"><small>Kesempatan</small><b id="verbalLives">❤️❤️❤️</b></div>
+        <div class="st"><small>Skor Rekor</small><b id="verbalBest">0</b></div>
+      </div>
+
+      <!-- Kartu Kata Ditampilkan -->
+      <div class="verbal-card" id="verbalCard">
+        <span class="verbal-badge" id="verbalCounter">Kata #1</span>
+        <div class="verbal-word" id="verbalWord">Siap?</div>
+        <div class="verbal-feedback" id="verbalFeedback"></div>
+      </div>
+
+      <!-- Tombol Keputusan: KATA BARU vs SUDAH PERNAH -->
+      <div class="verbal-actions" id="verbalActions" style="display:none;">
+        <button class="verbal-btn btn-new" id="verbalBtnNew">
+          <span class="v-icon">🆕</span>
+          <span class="v-title">KATA BARU</span>
+          <small>Belum pernah muncul</small>
+        </button>
+        <button class="verbal-btn btn-seen" id="verbalBtnSeen">
+          <span class="v-icon">🔁</span>
+          <span class="v-title">SUDAH PERNAH</span>
+          <small>Pernah muncul sebelumnya</small>
+        </button>
+      </div>
+
+      <p class="hint" id="verbalHint">Tentukan apakah kata yang muncul itu kata baru atau sudah pernah muncul!</p>
+
+      <div class="game-controls">
+        <button class="btn" id="verbalStartBtn">Mulai Tantangan Kata</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL GLOBAL HASIL / REKOR ==================== -->
+  <div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="modal">
+      <div class="modal-icon" id="mIcon">🏆</div>
+      <h2 id="mTitle">Hasil Permainan</h2>
+      <p id="mSub"></p>
+      <div class="big" id="mScore">0</div>
+      <p id="mBest"></p>
+      <div class="row">
+        <button class="btn" id="mNext">Level Berikutnya</button>
+        <button class="btn" id="mAgain">Main Lagi</button>
+        <button class="btn alt" id="mBackHub">Menu Utama</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL BANTUAN / CARA MAIN ==================== -->
+  <div class="overlay" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal help-modal-box">
+      <h2 id="helpTitle">Cara Bermain</h2>
+      <div class="help-content" id="helpContent"></div>
+      <div class="row">
+        <button class="btn" id="helpCloseBtn">Saya Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

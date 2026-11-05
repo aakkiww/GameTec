@@ -1,0 +1,1397 @@
+:root {
+  --bg: #ffeefa;
+  --ink: #592a47;
+  --mute: #7b526a;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-solid: #ffffff;
+  --back: #b85799;
+  --back2: #dd81bd;
+  --face: #fee0f7;
+  --ok: #2fb67c;
+  --warn: #ff5a5f;
+  --gold: #ffc933;
+  --line: #f7d8f5;
+  --shadow: rgba(184, 87, 153, 0.15);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --g1: #ffd3ea;
+  --g2: #e2d3ff;
+  --g3: #cde3ff;
+  --g4: #f6d0ff;
+  --g5: #d2ecff;
+  box-sizing: border-box;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #27122b;
+  --ink: #fae6fa;
+  --mute: #cf9ecc;
+  --panel: rgba(56, 26, 56, 0.92);
+  --panel-solid: #3a193b;
+  --back: #db59b2;
+  --back2: #e77ac3;
+  --face: #52234e;
+  --ok: #34d399;
+  --warn: #ff6b6b;
+  --gold: #ffd166;
+  --line: #6b2d63;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --g1: #3b1842;
+  --g2: #24225a;
+  --g3: #1a3258;
+  --g4: #3e1b54;
+  --g5: #1c305c;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #27122b;
+    --ink: #fae6fa;
+    --mute: #cf9ecc;
+    --panel: rgba(56, 26, 56, 0.92);
+    --panel-solid: #3a193b;
+    --back: #db59b2;
+    --back2: #e77ac3;
+    --face: #52234e;
+    --ok: #34d399;
+    --warn: #ff6b6b;
+    --gold: #ffd166;
+    --line: #6b2d63;
+    --shadow: rgba(0, 0, 0, 0.35);
+    --g1: #3b1842;
+    --g2: #24225a;
+    --g3: #1a3258;
+    --g4: #3e1b54;
+    --g5: #1c305c;
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(125deg, var(--g1), var(--g2), var(--g3), var(--g4), var(--g5), var(--g1));
+  background-size: 300% 300%;
+  background-attachment: fixed;
+  animation: waveBg 18s ease-in-out infinite;
+  color: var(--ink);
+  font-family: "Fredoka", system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}
+
+body::before, body::after {
+  content: "";
+  position: fixed;
+  left: -25%;
+  width: 150%;
+  height: 60vh;
+  z-index: -2;
+  pointer-events: none;
+  border-radius: 45%;
+  opacity: 0.55;
+}
+
+body::before {
+  bottom: -38vh;
+  background: linear-gradient(90deg, #ffb9dd, #c9b6ff, #a9d2ff);
+  animation: driftWave 14s ease-in-out infinite alternate;
+}
+
+body::after {
+  bottom: -44vh;
+  background: linear-gradient(90deg, #a9d2ff, #d9b8ff, #ffc2e2);
+  opacity: 0.45;
+  animation: driftWave 20s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes waveBg {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes driftWave {
+  from { transform: translateX(-6%) rotate(-2deg); }
+  to { transform: translateX(6%) rotate(2deg); }
+}
+
+/* Confetti Canvas */
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Bintang Jatuh */
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  top: -8vh;
+  left: var(--x);
+  font-size: var(--s);
+  line-height: 1;
+  color: var(--c);
+  text-shadow: 0 0 6px var(--c), 0 0 14px var(--c);
+  opacity: 0;
+  animation: fall var(--d) linear var(--delay) infinite;
+}
+
+@keyframes fall {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.9; }
+  85% { opacity: 0.8; }
+  100% { transform: translate(var(--drift), 112vh) rotate(360deg); opacity: 0; }
+}
+
+/* ==================== HEADER & NAVBAR ==================== */
+.app-header {
+  width: min(96vw, 840px);
+  margin: 12px auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px var(--shadow);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 10px;
+  z-index: 25;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+  color: var(--back);
+}
+
+.brand-sub {
+  font-size: 0.68rem;
+  color: var(--mute);
+  font-weight: 500;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-btn {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.nav-btn.active {
+  background: var(--back);
+  color: #ffffff;
+  border-color: var(--back);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  font: inherit;
+  background: var(--line);
+  border: 0;
+  color: var(--ink);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.icon-btn:hover {
+  transform: scale(1.08);
+}
+
+/* ==================== MAIN CONTAINER & VIEWS ==================== */
+.main-container {
+  width: min(96vw, 840px);
+  margin: 10px auto 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.view {
+  display: none;
+  width: 100%;
+  animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== VIEW 1: HERO & HUB ==================== */
+.hero-card {
+  width: 100%;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 4px 18px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--face);
+  color: var(--back);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.hero-content h2 {
+  margin: 0 0 8px;
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.hero-content p {
+  margin: 0;
+  color: var(--mute);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hero-stat-box {
+  background: var(--face);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.hero-stat-box .h-num {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--back);
+}
+
+.hero-stat-box .h-lbl {
+  font-size: 0.74rem;
+  color: var(--mute);
+  font-weight: 500;
+}
+
+.section-title {
+  margin: 10px 0 0;
+  align-self: flex-start;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Grid Kartu Game */
+.game-cards-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.g-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 3px 12px var(--shadow);
+  cursor: pointer;
+}
+
+.g-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--back);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.g-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.g-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.g-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.tag-visual { background: #ffe4e6; color: #e11d48; }
+.tag-spatial { background: #e0e7ff; color: #4338ca; }
+.tag-sequential { background: #fef3c7; color: #b45309; }
+.tag-working { background: #dcfce7; color: #15803d; }
+.tag-verbal { background: #f3e8ff; color: #7e22ce; }
+
+[data-theme="dark"] .tag-visual { background: #4c1d24; color: #fda4af; }
+[data-theme="dark"] .tag-spatial { background: #282a5c; color: #a5b4fc; }
+[data-theme="dark"] .tag-sequential { background: #4d3a14; color: #fde047; }
+[data-theme="dark"] .tag-working { background: #184428; color: #86efac; }
+[data-theme="dark"] .tag-verbal { background: #3d1b54; color: #d8b4fe; }
+
+.g-card h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.g-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--mute);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.g-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.g-best {
+  font-size: 0.8rem;
+  color: var(--mute);
+}
+
+.g-best b {
+  color: var(--back);
+  font-size: 0.95rem;
+}
+
+.play-btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+}
+
+/* Card Edukasi */
+.edu-card {
+  width: 100%;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.edu-card h3 {
+  margin: 0 0 14px;
+  font-size: 1.15rem;
+}
+
+.edu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.edu-item {
+  background: var(--face);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+
+.edu-item b {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  color: var(--back);
+}
+
+.edu-item p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--mute);
+  line-height: 1.4;
+}
+
+/* ==================== KOMPONEN GAME UMUM ==================== */
+.game-header {
+  width: min(94vw, 480px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.back-btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.back-btn:hover {
+  background: var(--line);
+}
+
+.game-title-wrap {
+  text-align: center;
+}
+
+.game-title-wrap h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.badge-mini {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: var(--mute);
+  font-weight: 500;
+}
+
+.btn-help {
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  color: var(--mute);
+  padding: 6px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-help:hover {
+  color: var(--ink);
+  border-color: var(--back);
+}
+
+/* Stats Row */
+.stats {
+  display: grid;
+  gap: 8px;
+  width: min(94vw, 480px);
+}
+
+.stats-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stats-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.st {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.st small {
+  display: block;
+  color: var(--mute);
+  font-size: 0.72rem;
+}
+
+.st b {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.st.low b {
+  color: var(--warn);
+}
+
+/* Durasi Progress Bar */
+.bar {
+  width: min(94vw, 480px);
+  height: 8px;
+  background: var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--ok);
+  transition: width 1s linear, background 0.3s;
+}
+
+.hint {
+  color: var(--mute);
+  font-size: 0.84rem;
+  margin: 4px 0 0;
+  text-align: center;
+  max-width: min(94vw, 480px);
+  min-height: 1.4em;
+}
+
+.game-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Buttons */
+.btn {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background: var(--back);
+  color: #fff;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 3px 8px var(--shadow);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.alt {
+  background: var(--line);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.btn.alt:hover {
+  background: var(--panel-solid);
+}
+
+/* ==================== GAME 1: KARTU KEMBAR ==================== */
+.levels {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: min(94vw, 480px);
+}
+
+.lv {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.82rem;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lv[aria-pressed="true"] {
+  background: var(--back);
+  border-color: var(--back);
+  color: #fff;
+}
+
+.board {
+  --n: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+  gap: calc(24px / var(--n) + 4px);
+  width: min(94vw, 460px, 60vh);
+  aspect-ratio: 1;
+}
+
+.card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  perspective: 600px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  min-width: 0;
+}
+
+.in {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+  pointer-events: none;
+}
+
+.card.open .in, .card.done .in {
+  transform: rotateY(180deg);
+}
+
+.f, .b {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+
+.b {
+  background: repeating-conic-gradient(var(--back) 0% 25%, var(--back2) 0% 50%) 0 0/50% 50%;
+  border: 3px solid var(--panel);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.f {
+  transform: rotateY(180deg);
+  background: var(--face);
+  border: 3px solid var(--line);
+  font-size: calc(var(--sz, 60px) * 0.62);
+  line-height: 1;
+}
+
+.card.done .f {
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 18%, var(--face));
+}
+
+.card.done .in {
+  animation: pop 0.4s 0.3s;
+}
+
+.free {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--sz, 60px) * 0.5);
+  opacity: 0.85;
+  border-radius: 14px;
+  border: 3px dashed var(--line);
+}
+
+@keyframes pop {
+  50% { transform: scale(1.08) rotateY(180deg); }
+}
+
+.wrong .in {
+  animation: shake 0.35s 0.35s;
+}
+
+@keyframes shake {
+  25% { transform: translateX(-5px) rotateY(180deg); }
+  75% { transform: translateX(5px) rotateY(180deg); }
+}
+
+/* ==================== GAME 2: MATRIKS SPASIAL ==================== */
+.matrix-board-wrap {
+  width: min(94vw, 440px, 58vh);
+  aspect-ratio: 1;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.matrix-board {
+  --cols: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.mat-tile {
+  background: var(--face);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.mat-tile:hover {
+  transform: scale(0.97);
+}
+
+.mat-tile.active-peek {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border-color: #c084fc;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.6);
+  transform: scale(0.95);
+  animation: pulsePeek 0.6s infinite alternate;
+}
+
+@keyframes pulsePeek {
+  from { opacity: 0.9; }
+  to { opacity: 1; }
+}
+
+.mat-tile.found {
+  background: linear-gradient(135deg, var(--ok), #34d399);
+  border-color: #6ee7b7;
+  color: #fff;
+  transform: scale(0.95);
+}
+
+.mat-tile.wrong {
+  background: linear-gradient(135deg, var(--warn), #ef4444);
+  border-color: #fca5a5;
+  color: #fff;
+  animation: shakeSimple 0.35s ease;
+}
+
+@keyframes shakeSimple {
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ==================== GAME 3: URUTAN SIMON ==================== */
+.simon-container {
+  width: min(92vw, 360px);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+.simon-circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 4px solid var(--line);
+  box-shadow: 0 8px 24px var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.simon-pad {
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.1s ease, filter 0.15s ease, opacity 0.15s ease;
+  opacity: 0.72;
+}
+
+.simon-pad:active {
+  transform: scale(0.96);
+}
+
+.pad-pink {
+  background: #ff5e9c;
+  border-top-left-radius: 100%;
+}
+.pad-blue {
+  background: #38bdf8;
+  border-top-right-radius: 100%;
+}
+.pad-green {
+  background: #34d399;
+  border-bottom-left-radius: 100%;
+}
+.pad-gold {
+  background: #fbbf24;
+  border-bottom-right-radius: 100%;
+}
+
+.simon-pad.lit {
+  opacity: 1;
+  filter: brightness(1.35) drop-shadow(0 0 14px currentColor);
+  transform: scale(0.98);
+}
+
+.pad-pink.lit { color: #ff5e9c; }
+.pad-blue.lit { color: #38bdf8; }
+.pad-green.lit { color: #34d399; }
+.pad-gold.lit { color: #fbbf24; }
+
+.simon-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36%;
+  height: 36%;
+  border-radius: 50%;
+  background: var(--panel-solid);
+  border: 4px solid var(--line);
+  box-shadow: 0 4px 12px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.simon-center-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.simon-center-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--back);
+}
+
+/* ==================== GAME 4: RENTANG ANGKA ==================== */
+.mode-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.mode-btn {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: var(--panel);
+  color: var(--mute);
+  cursor: pointer;
+}
+
+.mode-btn.active {
+  background: var(--back);
+  color: #fff;
+  border-color: var(--back);
+}
+
+.digit-stage {
+  width: min(94vw, 420px);
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 4px 18px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 240px;
+  justify-content: center;
+}
+
+.digit-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.digit-big {
+  font-size: 5rem;
+  font-weight: 700;
+  color: var(--back);
+  line-height: 1;
+  min-height: 1.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.15s ease;
+}
+
+.digit-big.pop-num {
+  animation: numPop 0.3s ease;
+}
+
+@keyframes numPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.digit-progress {
+  display: flex;
+  gap: 8px;
+}
+
+.digit-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: all 0.2s ease;
+}
+
+.digit-dot.active {
+  background: var(--back);
+  transform: scale(1.3);
+}
+
+.digit-input-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.digit-user-input {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: var(--ink);
+  background: var(--face);
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  min-width: 180px;
+  text-align: center;
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: min(85vw, 240px);
+}
+
+.num-key {
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: 600;
+  background: var(--face);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.num-key:hover {
+  background: var(--line);
+}
+
+.num-key:active {
+  transform: scale(0.92);
+}
+
+.num-key.alt {
+  font-size: 1rem;
+  background: var(--line);
+  color: var(--mute);
+}
+
+.submit-btn {
+  width: min(85vw, 240px);
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+/* ==================== GAME 5: MEMORI KATA ==================== */
+.verbal-card {
+  width: min(94vw, 440px);
+  min-height: 180px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px 16px;
+  box-shadow: 0 4px 18px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.verbal-badge {
+  position: absolute;
+  top: 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--mute);
+  background: var(--face);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.verbal-word {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 12px 0 6px;
+  letter-spacing: -0.5px;
+  animation: wordIn 0.25s ease;
+}
+
+@keyframes wordIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.verbal-feedback {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-height: 1.4em;
+}
+
+.verbal-feedback.correct {
+  color: var(--ok);
+}
+
+.verbal-feedback.wrong {
+  color: var(--warn);
+}
+
+.verbal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: min(94vw, 440px);
+}
+
+.verbal-btn {
+  font: inherit;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  background: var(--panel);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.verbal-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px var(--shadow);
+}
+
+.verbal-btn:active {
+  transform: translateY(1px);
+}
+
+.verbal-btn .v-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.verbal-btn .v-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.verbal-btn small {
+  font-size: 0.74rem;
+  color: var(--mute);
+}
+
+.btn-new {
+  border-color: #93c5fd;
+}
+.btn-new .v-title {
+  color: #2563eb;
+}
+[data-theme="dark"] .btn-new .v-title {
+  color: #60a5fa;
+}
+
+.btn-seen {
+  border-color: #86efac;
+}
+.btn-seen .v-title {
+  color: #16a34a;
+}
+[data-theme="dark"] .btn-seen .v-title {
+  color: #4ade80;
+}
+
+/* ==================== MODALS & OVERLAYS ==================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 35, 0.65);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 110;
+  animation: fadeIn 0.2s ease;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.modal {
+  background: var(--panel-solid);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  border: 3px solid var(--line);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+  animation: scaleUp 0.25s ease;
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.modal h2 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.modal p {
+  margin: 6px 0;
+  color: var(--mute);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.modal .big {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--back);
+  margin: 10px 0;
+}
+
+.modal .row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* Modal Bantuan */
+.help-modal-box {
+  max-width: 440px;
+  text-align: left;
+}
+
+.help-modal-box h2 {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.help-content {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.help-content h4 {
+  margin: 12px 0 4px;
+  color: var(--back);
+  font-size: 0.95rem;
+}
+
+.help-content ul {
+  margin: 4px 0 10px 18px;
+  padding: 0;
+}
+
+.help-content li {
+  margin-bottom: 4px;
+}
+
+/* ==================== ACCESSIBILITY & RESPONSIVE ==================== */
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .brand-title {
+    font-size: 1.15rem;
+  }
+  .nav-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .hero-card {
+    padding: 16px;
+  }
+  .hero-content h2 {
+    font-size: 1.35rem;
+  }
+  .hero-stats {
+    gap: 6px;
+  }
+  .hero-stat-box .h-num {
+    font-size: 1.15rem;
+  }
+  .game-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, body::before, body::after, .stars, .in, .bar i, .mat-tile, .card.done .in, .wrong .in {
+    animation: none !important;
+    transition: none !important;
+  }
+  .stars {
+    display: none;
+  }
+}
